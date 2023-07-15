@@ -1,20 +1,20 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const database = require('./config'); // Database configuration file
+const database = require('./config'); 
 
 const app = express();
 app.use(bodyParser.json());
 
-// forgetPassword endpoint
+
 app.post('/forgetPassword', async (req, res) => {
-  const { email, password } = req.body;
+  const { CG_Email_Address, password } = req.body;
   
   try {
     const docRef = database.collection("InventoryDb").doc(email);
     const docSnapshot = await docRef.get();
 
     if (docSnapshot.exists) {
-      // Update the password field in the user document
+      
       await docRef.update({ password });
 
       res.status(200).json({ message: 'Password updated successfully' });
