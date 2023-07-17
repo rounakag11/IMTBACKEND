@@ -7,7 +7,7 @@ app.use(express.json());
 
 // Signup endpoint
 app.post("/signup", async (req, res) => {
-  const { CG_ID, CG_Email_Address, Full_Name, Phone_Number } = req.body;
+  const { CG_ID, CG_Email_Address, Full_Name, Phone_Number, Password } = req.body;
   // const snapshot = await database.collection('users').get();
   // console.log('snapshot',snapshot)
 
@@ -23,6 +23,7 @@ app.post("/signup", async (req, res) => {
         CG_Email_Address: CG_Email_Address,
         Full_Name: Full_Name,
         Phone_Number: Phone_Number,
+        Password: Password
       })
       .then((userRecord) => {
         // User created successfully

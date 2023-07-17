@@ -21,7 +21,7 @@ app.post("/forgetPassword", async (req, res) => {
   }
 });
 
-// Start the server
+// Start the server we use the server port I.E 5000 
 const port = 5000;
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
