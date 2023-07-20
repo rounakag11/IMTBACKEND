@@ -8,15 +8,19 @@ app.use(express.json());
 // Signup endpoint
 app.post("/signup", async (req, res) => {
   const { CG_ID, CG_Email_Address, Full_Name, Phone_Number, Password } = req.body;
-  // const snapshot = await database.collection('users').get();
-  // console.log('snapshot',snapshot)
 
   const docRef = database.collection("CG_SignUp_DB").doc(`${CG_ID}`);
   const docSnapshot = await docRef.get();
-
-  if (docSnapshot.exists) {
+  if(!CG_ID && !CG_Email_Address && !Full_Name && !Phone_Number && !Password ){
+    res.status(400).json({error: "Please enter all the Data"})
+  }
+  else if (CG_ID == "" && CG_Email_Address == "" && Full_Name == "" && Phone_Number == "" && Password == ""){
+    res.status(400).json({error: "Please enter all the Data"})
+  }
+  else if (docSnapshot.exists) {
     res.status(400).json({ error: "User Already Exists" });
-  } else {
+  }
+  else {
     await docRef
       .set({
         CG_ID: CG_ID,

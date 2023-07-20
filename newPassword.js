@@ -1,40 +1,32 @@
-const admin = require('firebase-admin');
-const serviceAccount = require('./path/to/serviceAccountKey.json');
+const express = require("express");
+const bodyParser = require("body-parser");
+const database = require("./config");
+
+const app = express();
+app.use(bodyParser.json());
 
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: 'https://console.firebase.google.com/u/0/project/inventory-management-t/overview'
-});
-
-
-async function updatePassword(CG_ID, currentPassword, newPassword) {
-  try {
-    
-    const userSnapshot = await admin.database("CG_SignUp_DB").ref(`users/${CG_ID}`).once('value');
-    const userData = userSnapshot.val();
-
-    if (userData.password !== currentPassword) {
-      throw new Error('Current password is incorrect');
+app.post("/newPassword", async (req, res) => {
+    const { CG_ID, Current_Password , New_Password } = req.body;
+  
+    const docRef = database.collection("CG_SignUp_DB").doc(`${CG_ID}`);
+    if(Current_Password == New_Password){
+        res.status(400).json({ error: "New Password And Current Password Are Same" });
     }
-
-    
-    await admin.database("CG_SignUp_DB").ref(`users/${CG_ID}`).update({
-      password: newPassword
-    });
-
-    console.log(`Password updated successfully for user: ${CG_ID}`);
-  } catch (error) {
-    console.error('Error updating password:', error);
-  }
+    else{
+        await docRef
+        .update({
+          Password: New_Password
+        })
+        .then((userRecord) => {
+          res.status(200).json({ message: "New Password Has Set SuccessFully" });
+        })
+        .catch((error) => {
+          res.status(500).json({ error: "Failed to create user" });
+        });
 }
 
-
-const CG_ID = 'CG_ID'; 
-const currentPassword = 'current-password'; 
-const newPassword = 'new-password'; 
-
-updatePassword(CG_ID, currentPassword, newPassword);
+})
 
 // Start the server
 const port = 5000;
