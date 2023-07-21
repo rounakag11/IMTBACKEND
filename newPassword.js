@@ -7,11 +7,12 @@ app.use(bodyParser.json());
 
 
 app.post("/newPassword", async (req, res) => {
-    const { CG_ID, Current_Password , New_Password } = req.body;
+    const { CG_ID, New_Password, Confirm_New_Password } = req.body;
   
+
     const docRef = database.collection("CG_SignUp_DB").doc(`${CG_ID}`);
-    if(Current_Password == New_Password){
-        res.status(400).json({ error: "New Password And Current Password Are Same" });
+    if(New_Password !== Confirm_New_Password){
+        res.status(400).json({ error: "New Password And confirm New Password Are not Same" });
     }
     else{
         await docRef
