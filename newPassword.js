@@ -7,7 +7,7 @@ app.use(bodyParser.json());
 
 
 app.post("/newPassword", async (req, res) => {
-    const { CG_ID, New_Password, Confirm_New_Password } = req.body;
+    const { CG_ID,New_Password, Confirm_New_Password } = req.body;
   
 
     const docRef = database.collection("CG_SignUp_DB").doc(`${CG_ID}`);
@@ -28,7 +28,6 @@ app.post("/newPassword", async (req, res) => {
 }
 
 })
-
 // Start the server
 const port = 5000;
 app.listen(port, () => {
