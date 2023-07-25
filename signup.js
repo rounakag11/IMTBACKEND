@@ -22,7 +22,7 @@ app.post("/signup", async (req, res) => {
   const docRef = database.collection("CG_SignUp_DB").doc(`${CG_ID}`);
   const docSnapshot = await docRef.get();
   if (!CG_ID && !CG_Email_Address && !Full_Name && !Phone_Number && !Password) {
-    res.status(400).json({ error: "Please enter all the Data" });
+    res.status(400).json({ message: "Please enter all the Data" });
   } else if (
     CG_ID == "" &&
     CG_Email_Address == "" &&
@@ -30,19 +30,19 @@ app.post("/signup", async (req, res) => {
     Phone_Number == "" &&
     Password == ""
   ) {
-    res.status(400).json({ error: "Please enter all the Data" });
+    res.status(400).json({ message: "Please enter all the Data" });
   } else if (CGIDRegexp.test(CG_ID)) {
-    res.status(400).json({ error: "Please enter CG ID in proper format" });
+    res.status(400).json({ message: "Please enter CG ID in proper format" });
   } else if (Phonenumberregexp.test(Phone_Number)) {
-    res
-      .status(400)
-      .json({ error: "Please enter phone number  in proper format" });
+
+    res.status(400)
+      .json({ message: "Please enter phone number  in proper format" });
   } else if (emailRegExp.test(CG_Email_Address)) {
-    res.status(400).json({ error: "Please enter email id in proper format" });
+    res.status(400).json({ message: "Please enter email id in proper format" });
   } else if (passwordRegExp.test(Password)) {
-    res.status(400).json({ error: "please enter password in required format" });
+    res.status(400).json({ messsage: "please enter password in required format" });
   } else if (docSnapshot.exists) {
-    res.status(400).json({ error: "User Already Exists" });
+    res.status(400).json({ message: "User Already Exists" });
   } else {
     await docRef
       .set({
@@ -60,7 +60,7 @@ app.post("/signup", async (req, res) => {
       .catch((error) => {
         // Error occurred during user creation
         console.log("Error creating new user:", error);
-        res.status(500).json({ error: "Failed to create user" });
+        res.status(500).json({ message: "Failed to create user" });
       });
   }
 });
