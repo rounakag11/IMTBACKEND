@@ -17,9 +17,7 @@ app.post("/modifiedInventoryDetails", async (req, res) => {
     Working_status,
     User_Role,
   } = req.body;
-  const newInventory_DocRef = database
-    .collection("AddNewInventory")
-    .doc(`${User_Name}-${Sl_No}`);
+  const newInventory_DocRef = database.collection("Inventory").doc(`${User_Name}-${Sl_No}`);
   const docSnapshot = await newInventory_DocRef.get();
   const transporter = nodemailer.createTransport({
     service : 'Gmail',
@@ -67,7 +65,6 @@ app.post("/modifiedInventoryDetails", async (req, res) => {
   else if (Sl_No == "" && !Sl_No) {
     res.status(404).json({ message: "Serial No  is required" });
   }
-  // user name is not blank or undefined
   else if (User_Name == "" && !User_Name) {
     res.status(404).json({ message: "User Name is required" });
   }
