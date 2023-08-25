@@ -44,8 +44,8 @@ app.post("/modifiedInventoryDetails", async (req, res) => {
     Inventory_Name == "" &&
     type == "" &&
     Sl_No == "" &&
-    User_Name == ""
-    && User_Role == ""
+    User_Name == ""&&
+     User_Role == ""
   ) {
     res
       .status(404)
@@ -81,8 +81,16 @@ app.post("/modifiedInventoryDetails", async (req, res) => {
   else {
     await newInventory_DocRef
       .update({
-          // jo bhi update kra na hai wo yaha likh dena ka 
+        User_Name: User_Name,
+        Sl_No: Sl_No,
+        type: type,
+        Allocation_date: Allocation_date,
+        Inventory_Name: Inventory_Name,
+        Invoice: Invoice ? Invoice : "",
+        Tag_name: Tag_name ? Tag_name : "",
+        Working_status: Working_status ? Working_status : "",
       })
+      
       .then(async (userRecord) => {
         console.log("Successfully created new user:", userRecord);
         res.status(200).json({ message: "New Inventory added successfully" });

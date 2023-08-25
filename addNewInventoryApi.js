@@ -17,9 +17,7 @@ app.post("/addNewInventory", async (req, res) => {
     Working_status,
     User_Role,
   } = req.body;
-  const newInventory_DocRef = database
-    .collection("AddNewInventory")
-    .doc(`${User_Name}-${Sl_No}`);
+  const newInventory_DocRef = database.collection("Inventory").doc(`${User_Name}-${Sl_No}`);
   const docSnapshot = await newInventory_DocRef.get();
   const transporter = nodemailer.createTransport({
     service : 'Gmail',
