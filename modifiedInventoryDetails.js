@@ -7,15 +7,7 @@ app.use(bodyParser.json());
 
 app.post("/modifiedInventoryDetails", async (req, res) => {
   const {
-    Allocation_date,
-    Inventory_Name,
-    type,
-    Sl_No,
-    User_Name,
-    Invoice,
-    Tag_name,
-    Working_status,
-    User_Role,
+    Sl_No
   } = req.body;
   const newInventory_DocRef = database.collection("Inventory").doc(`${User_Name}-${Sl_No}`);
   const docSnapshot = await newInventory_DocRef.get();
