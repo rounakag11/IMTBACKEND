@@ -7,7 +7,15 @@ app.use(bodyParser.json());
 
 app.post("/modifiedInventoryDetails", async (req, res) => {
   const {
-    Sl_No
+    Allocation_date,
+    Inventory_Name,
+    type,
+    Sl_No,
+    User_Name,
+    Invoice,
+    Tag_name,
+    Working_status,
+    User_Role,
   } = req.body;
   const newInventory_DocRef = database.collection("Inventory").doc(`${User_Name}-${Sl_No}`);
   const docSnapshot = await newInventory_DocRef.get();
@@ -61,12 +69,6 @@ app.post("/modifiedInventoryDetails", async (req, res) => {
     res.status(404).json({ message: "User Name is required" });
   }
   // Here we are checking if duplicacy is there in data base through unique key
-  else if (docSnapshot.exists) {
-    res
-      .status(400)
-      .json({ message: " Inventory Is already added In Database" });
-  }
-  // adding new inventory to database
   else {
     await newInventory_DocRef
       .update({
