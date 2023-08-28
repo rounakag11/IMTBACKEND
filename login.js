@@ -21,15 +21,7 @@ app.post("/login", async (req, res) => {
 
  return;
 }
-try {
-// Validate login using Firebase Authentication
-await firebaseAdmin.auth().signInWithEmailAndPassword(CG_ID,Password);
-res.status(200).json({ message: "Login successful!" });
-} catch (error) {
-console.error(error);
- res.status(401).json({ error: "Invalid username or password. Please try again." });
-}
-const docRef = db.collection("CG_SignUp_DB").doc(CG_ID);
+const docRef = database.collection("CG_SignUp_DB").doc(CG_ID);
 const docSnapshot = await docRef.get();
 if (docSnapshot.exists) {
 const userData = docSnapshot.data();
@@ -47,7 +39,3 @@ app.get("/", (req, res) => {
 res.sendFile(__dirname + "/index.html");
 });
 // Start the server
-const port = 5000;
-app.listen(port, () => {
-console.log(`Server is running on port ${port}`);
-});

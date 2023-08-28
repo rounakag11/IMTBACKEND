@@ -1,9 +1,7 @@
 const express = require("express");
-const bodyParser = require("body-parser");
 const database = require("./config");
 
 const app = express();
-app.use(bodyParser.json());
 
 
 
@@ -28,7 +26,7 @@ function isOTPValid(CG_Email_Address) {
 app.post("/forgetPassword", async (req, res) => {
   const { CG_Email_Address } = req.body;
 
-  const collectionRef = db.collection("CG_SignUp_DB");
+  const collectionRef = database.collection("CG_SignUp_DB");
 
   const querySnapshot = await collectionRef
     .where("CG_Email_Address", "==", CG_Email_Address)
@@ -83,11 +81,7 @@ app.post("/verifyOTP", async (req, res) => {
 
 // Start the server on port 5000
 
-const port = 5000;
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
 
 
 

@@ -19,6 +19,7 @@ app.use(cors());
 app.post("/signup", async (req, res) => {
   const { CG_ID, CG_Email_Address, Full_Name, Phone_Number, Password } =
     req.body;
+    
   const docRef = database.collection("CG_SignUp_DB").doc(`${CG_ID}`);
   const docSnapshot = await docRef.get();
   if (!CG_ID && !CG_Email_Address && !Full_Name && !Phone_Number && !Password) {
@@ -65,8 +66,3 @@ app.post("/signup", async (req, res) => {
   }
 });
 
-// Start the server
-const port = 5000;
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});

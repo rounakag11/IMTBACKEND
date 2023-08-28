@@ -1,9 +1,14 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const database = require("./config");
+const cors = require("cors");
+
 
 const app = express();
-app.use(bodyParser.json());
+// postman 
+ app.use(express.json());
+// react 
+app.use(cors());
 
 
 app.post("/newPassword", async (req, res) => {
@@ -28,8 +33,3 @@ app.post("/newPassword", async (req, res) => {
 }
 
 })
-// Start the server
-const port = 5000;
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
