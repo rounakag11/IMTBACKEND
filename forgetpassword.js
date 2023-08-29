@@ -79,7 +79,7 @@ app.post("/verifyOTP", async (req, res) => {
   }
 });
 
-// Start the server on port 5000
+
 
 
 

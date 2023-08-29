@@ -38,4 +38,4 @@ res.status(404).json({ error: "User not found" });
 app.get("/", (req, res) => {
 res.sendFile(__dirname + "/index.html");
 });
-// Start the server
+
