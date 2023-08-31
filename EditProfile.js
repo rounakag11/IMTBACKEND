@@ -1,100 +1,92 @@
 const express = require("express");
-const bodyParser=require("body-parser");
-const database= require("database");
-const cors= require("cors");
-const nodemailer = require("nodemailer");
+const database = require("./config");
 
-app.use(bodyParser.json());
+const app = express();
 
-app.post("/", async (req, res) => {
-    const {
-      Allocation_date,
-      Inventory_Name,
-      type,
-      Invoice,
-      Tag_name,
-      Working_status,
-      User_Role,
-    } = req.body;
-    const newInventory_DocRef = database.collection("Inventory").doc(`${User_Name}-${Sl_No}`);
-    const docSnapshot = await newInventory_DocRef.get();
-    const transporter = nodemailer.createTransport({
-      service : 'Gmail',
-      auth:{
-          user: 'invetorytools@gmail.com',
-          pass:'Admin@123'
-      }
-    })
-    const mailOption = {
-      from: 'invetorytools@gmail.com',
-      to: 'agrawalrounak008@gmail.com',
-      subject: 'Email releted Inventory acceptance',
-      text : `invetory request releted ${User_Name}`
-    }
-    // check if mandtory field are undefined
-    if (!Allocation_date && !Inventory_Name && !type ) {
-      res.status(404).json({ message: "Please Enter Mandatory Fields" });
-    }
-    // check if mandotory field is null or blank
-    else if (
-      Allocation_date == "" &&
-      Inventory_Name == "" &&
-      type == "" &&
-      User_Role == ""
-    ) {
-      res
-        .status(404)
-        .json({ message: "Please Do Not enter Mandatory Fields Data Blank" });
-    }
-    // Allocation data is blank or undefined
-    else if (Allocation_date == "" && !Allocation_date) {
-      res.status(404).json({ message: "Allocation Date is required" });
-    }
-    // inventory name is blank or undefined
-    else if (Inventory_Name == "" && !Inventory_Name) {
-      res.status(404).json({ message: "Inventory Name is required" });
-    }
-    // Checking if type is blank or undefined
-    else if (type == "" && !type) {
-      res.status(404).json({ message: "Type is required" });
-    }
-    // Here we are checking if duplicacy is there in data base through unique key
-    else if (docSnapshot.exists) {
-      res
-        .status(400)
-        .json({ message: " Inventory Is already added In Database" });
-    }
-    // adding new inventory to database
-    else {
-      await newInventory_DocRef
-        .set({
-          type: type,
-          Allocation_date: Allocation_date,
-          Inventory_Name: Inventory_Name,
-          Invoice: Invoice ? Invoice : "",
-          Tag_name: Tag_name ? Tag_name : "",
-          Working_status: Working_status ? Working_status : "",
+const otpStorage = {}; //Store OTP and its creation timestamp
+
+function generateOTP() {
+  return ("" + Math.random()).substring(2, 6);
+}
+
+function isOTPValid(CG_Email_Address) {
+  if (otpStorage[CG_Email_Address]) {
+    const currentTime = Date.now();
+
+    const { timestamp, validFor } = otpStorage[CG_Email_Address];
+
+    return currentTime <= timestamp + validFor;
+  }
+
+  return false;
+}
+app.post("/EditProfile", async (req, res) => {
+  const { CG_ID, CG_Email_Address, Password, Phone_Number } = req.body;
+
+  const collectionRef = database.collection("CG_SignUp_DB");
+
+  const querySnapshot = await collectionRef
+    .where("CG_Email_Address", "==", CG_Email_Address)
+    .get();
+
+  if (!querySnapshot.empty) {
+    const otp = generateOTP();
+
+    const timestamp = Date.now(); // Get the current timestamp in milliseconds
+
+    const validFor = 10 * 60 * 1000; // Validity period in milliseconds (10 minutes)
+
+    otpStorage[CG_Email_Address] = { otp, timestamp, validFor }; // Store the OTP, its timestamp, and validity period
+
+    // Clear the OTP data after the validity period
+
+    setTimeout(() => {
+      delete otpStorage[CG_Email_Address];
+    }, validFor);
+
+    res.status(200).json({
+      message: "User Exist",
+
+      verficationOtp: otp,
+
+      validFor: validFor, // Send the validity period in milliseconds (10 minutes)
+    });
+  } else {
+    res
+      .status(404)
+      .json({ error: "User does not exist. Please register first." });
+  }
+});
+
+app.post("/verifyOTPEditProfile", async (req, res) => {
+  const { CG_ID, Password, Phone_Number, otp } = req.body;
+
+  if (isOTPValid(CG_Email_Address)) {
+    if (otpStorage[CG_Email_Address].otp === otp) {
+      const docRef = database.collection("CG_SignUp_DB").doc(`${CG_ID}`);
+      await docRef
+        .update({
+          Password: Password,
+          Phone_Number: Phone_Number,
         })
-        .then(async (userRecord) => {
-          console.log("Successfully created new user:", userRecord);
-          res.status(200).json({ message: "New Inventory added successfully" });
-          if (User_Role != "Admin"){
-                try{
-                  const info = await transporter.sendMail(mailOption)
-                  console.log('email sent', info.response)
-                }
-                catch(error){
-                  console.error('error', error)
-                }
-          }
-          
+        .then((userRecord) => {
+          res.status(200).json({ message: "Profile Updated Sucessfully " });
         })
         .catch((error) => {
-          // Error occurred during user creation
-          console.log("Error creating new user:", error);
-          res.status(500).json({ message: "Failed to add new Inventory " });
+          res.status(500).json({ error: "Failed to create user" });
         });
+    } else {
+      res.status(400).json({ error: "Invalid OTP, please try again." });
     }
-  });
-  
+  } else {
+    // OTP has expired
+
+    delete otpStorage[CG_Email_Address];
+
+    res.status(400).json({ error: "OTP expired, please request a new one." });
+  }
+});
+
+
+
   

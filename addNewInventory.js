@@ -22,7 +22,7 @@ app.post("/addNewInventory", async (req, res) => {
   const transporter = nodemailer.createTransport({
     service : 'Gmail',
     auth:{
-        user: 'invetorytools@gmail.com',
+        user: 'inventorytools@gmail.com',
         pass:'Admin@123'
     }
   })

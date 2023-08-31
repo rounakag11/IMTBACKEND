@@ -1,6 +1,5 @@
 const express = require("express");
 const database = require("./config");
-
 const app = express();
 
 
