@@ -40,8 +40,6 @@ app.post("/forgetPassword", async (req, res) => {
 
     otpStorage[CG_Email_Address] = { otp, timestamp, validFor }; // Store the OTP, its timestamp, and validity period
 
-    // Clear the OTP data after the validity period
-
     setTimeout(() => {
       delete otpStorage[CG_Email_Address];
     }, validFor);
@@ -50,6 +48,7 @@ app.post("/forgetPassword", async (req, res) => {
       message: "User Exist",
 
       verficationOtp: otp,
+      
 
       validFor: validFor, // Send the validity period in milliseconds (10 minutes)
     });
