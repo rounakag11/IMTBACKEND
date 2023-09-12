@@ -1,5 +1,5 @@
 const emailRegExp = /^[a-zA-Z-.]+@+$/;
-const passwordRegExp =  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/; // admin@123
+const passwordRegExp =  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/; // admin@123 (first letter should be small)
 const CGIDRegexp = /^[0-9]{7}$/
 const Phonenumberregexp = /^[0-9]{9}$/
 
